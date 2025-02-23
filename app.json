@@ -32,7 +32,8 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ]
+      ],
+      "expo-secure-store",
     ],
     "experiments": {
       "typedRoutes": true
@@ -43,7 +44,8 @@
       },
       "eas": {
         "projectId": "c800fd49-20be-450c-9b9e-409808f73867"
-      }
+      },
+      "SECRET_KEY": "c800fd49-20be-450c-9b9e-409808f73867"
     },
     "owner": "concatenateline"
   }
