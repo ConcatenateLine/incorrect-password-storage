@@ -42,16 +42,16 @@ export function StorageProvider({ children }: PropsWithChildren) {
     <StorageContext.Provider
       value={{
         addSpace: () => {
-          if(spaces && spaces.length > 4) {
+          if (spaces && spaces.length > 4) {
             alert('You can only have 5 spaces');
+          } else {
+            const spaceName = generateRedOrangeHexColor();
+            addSpace({
+              state: 'active',
+              name: spaceName,
+              color: spaceName,
+            });
           }
-
-          const spaceName = generateRedOrangeHexColor();
-          addSpace({
-            state: 'active',
-            name: spaceName,
-            color: spaceName,
-          })
         },
         archiveSpace: (spaceName: string) => {
           archiveSpace(spaceName)

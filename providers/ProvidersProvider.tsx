@@ -134,7 +134,7 @@ export function ProvidersProvider({ children, selectedSpace }: PropsWithChildren
   useEffect(() => {
     if (!isLoadingProviders && !providers) {
       addAccount(
-        'gNwNp@example.com',
+        'account@example.com',
         'password'
       );
     }
@@ -143,15 +143,9 @@ export function ProvidersProvider({ children, selectedSpace }: PropsWithChildren
   return (
     <ProvidersContext.Provider
       value={{
-        addAccount: (username: string, password: string) => {
-          return addAccount(username, password);
-        },
-        archiveAccount: (id: string, username: string) => {
-          archiveAccount(id, username);
-        },
-        showPassword: (password: string) => {
-          return showPassword(password);
-        },
+        addAccount: addAccount,
+        archiveAccount: archiveAccount,
+        showPassword: showPassword,
         providers: providers ?? [],
         isLoadingProviders,
         error,

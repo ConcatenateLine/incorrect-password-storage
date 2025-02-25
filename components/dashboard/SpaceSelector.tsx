@@ -1,7 +1,6 @@
 import SpaceInterface from '@/interfaces/Space.interface';
-import { useMemo, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Animated, PanResponder, ImageBackground } from 'react-native'
-import NeonTextFlickering from '../NeonTextFlickering';
+import { useMemo } from 'react';
+import { View, Text, StyleSheet, Animated, PanResponder, ImageBackground } from 'react-native'
 
 interface SpaceSelectorProps {
   spacesList: SpaceInterface[]
@@ -9,20 +8,11 @@ interface SpaceSelectorProps {
 }
 
 const SpaceSelector = ({ spacesList, setSelectedSpace }: SpaceSelectorProps) => {
-  const [selectedCard, setSelectedCard] = useState<string | null>(null);
-  const cardStack = useMemo(() => { 
+  const cardStack = useMemo(() => {
     if (!spacesList) return [];
 
     return spacesList.map(() => new Animated.ValueXY())
   }, [spacesList]);
-
-  const handleCardPress = (card: string) => {
-    if (selectedCard === card) {
-      setSelectedCard(null);
-    }
-
-    setSelectedCard(card);
-  };
 
   const createPanResponder = (index: number) => PanResponder.create({
     onMoveShouldSetPanResponder: () => true,
@@ -33,14 +23,12 @@ const SpaceSelector = ({ spacesList, setSelectedSpace }: SpaceSelectorProps) => 
     },
     onPanResponderRelease: (_, gesture) => {
       if (gesture.dx < -100) {
-        // Animar la tarjeta fuera de la pantalla hacia la izquierda
         Animated.timing(cardStack[index], {
           toValue: { x: -700, y: 0 },
           duration: 200,
           useNativeDriver: false,
         }).start(() => {
           if (spacesList && spacesList[index]) {
-            setSelectedCard(spacesList[index].name);
             setSelectedSpace(spacesList[index].name);
           }
         });
@@ -49,7 +37,6 @@ const SpaceSelector = ({ spacesList, setSelectedSpace }: SpaceSelectorProps) => 
           toValue: { x: 0, y: 0 },
           useNativeDriver: false,
         }).start();
-
       }
     },
   });
@@ -70,15 +57,9 @@ const SpaceSelector = ({ spacesList, setSelectedSpace }: SpaceSelectorProps) => 
               }]}
             {...createPanResponder(index).panHandlers}
           >
-            <TouchableOpacity
-              style={[
-                styles.cardContent,
-                selectedCard === card.name && styles.selectedCard,
-              ]}
-              onPress={() => handleCardPress(card.name)}
-            >
+            <View style={styles.cardContent} >
               <Text style={styles.cardText}>{card.name}</Text>
-            </TouchableOpacity>
+            </View>
           </Animated.View>
         ))}
       </View>
@@ -117,18 +98,12 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
   },
-  selectedCard: {
-  },
   cardText: {
     color: '#F7AF27',
     fontFamily: 'TiltNeon',
     fontSize: 28,
     transform: [{ rotate: '90deg' }],
-  },
-  selectedCardText: {
-    marginTop: 20,
-    fontSize: 18,
-    fontWeight: 'bold',
+    userSelect: 'none',
   },
 });
 

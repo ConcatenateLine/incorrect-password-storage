@@ -2,6 +2,14 @@
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
+## About this project
+
+Thist project is a app that save passwords in the local storage, and it is a simple app that can be used to store passwords.
+
+Only for learning purposes not recommended for production use.
+
+The default code of lockscreen is `4`, tap 4 times to unlock the app.
+
 ## Get started
 
 1. Install dependencies

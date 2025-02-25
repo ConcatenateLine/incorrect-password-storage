@@ -1,4 +1,4 @@
-import { View, StyleSheet, ImageBackground } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import { AccountInterface } from '@/interfaces/Provider.interface';
 import Account from './Account';
 

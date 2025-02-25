@@ -11,7 +11,7 @@ export default function SignIn() {
     const newPin = [...pin, binaryValue];
 
     if (newPin.length >= 4) {
-      const accessGranted = validateAccess();
+      const accessGranted = validateAccess(newPin);
       if (accessGranted) {
         signIn();
       } else {

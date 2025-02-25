@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Animated, ImageBackground } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native'
 import ProviderInterface from '@/interfaces/Provider.interface';
 import AccountList from './AccountsList';
 
