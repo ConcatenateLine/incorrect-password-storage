@@ -1,13 +1,13 @@
 import SpaceInterface from '@/interfaces/Space.interface';
 import { useMemo } from 'react';
-import { View, Text, StyleSheet, Animated, PanResponder, ImageBackground } from 'react-native'
+import { ScrollView, View, Text, StyleSheet, Animated, PanResponder, ImageBackground } from 'react-native'
 
-interface SpaceSelectorProps {
+interface SpaceSelectorListProps {
   spacesList: SpaceInterface[]
   setSelectedSpace: (spaceName: string | null) => void
 }
 
-const SpaceSelector = ({ spacesList, setSelectedSpace }: SpaceSelectorProps) => {
+const SpaceSelectorList = ({ spacesList, setSelectedSpace }: SpaceSelectorListProps) => {
   const cardStack = useMemo(() => {
     if (!spacesList) return [];
 
@@ -27,6 +27,7 @@ const SpaceSelector = ({ spacesList, setSelectedSpace }: SpaceSelectorProps) => 
           setSelectedSpace(spacesList[index].name);
         }
       }
+
       Animated.spring(cardStack[index], {
         toValue: { x: 0, y: 0 },
         useNativeDriver: false,
@@ -36,26 +37,26 @@ const SpaceSelector = ({ spacesList, setSelectedSpace }: SpaceSelectorProps) => 
 
   return (
     <ImageBackground source={require('@/assets/images/dashboardBackground.png')} style={styles.container}>
-      <View style={styles.container}>
-        {spacesList?.map((card, index) => (
-          <Animated.View
-            key={index}
-            style={
-              [styles.card,
-              {
-                zIndex: spacesList.length - index,
-                transform: cardStack[index].getTranslateTransform(),
-                backgroundColor: card.color,
-                right: index * 40
-              }]}
-            {...createPanResponder(index).panHandlers}
-          >
-            <View style={styles.cardContent} >
-              <Text style={styles.cardText}>{card.name}</Text>
-            </View>
-          </Animated.View>
-        ))}
-      </View>
+      <ScrollView style={{ height: "100%" }}>
+        <View style={styles.container}>
+          {spacesList?.map((card, index) => (
+            <Animated.View
+              key={index}
+              style={
+                [styles.card,
+                {
+                  transform: cardStack[index].getTranslateTransform(),
+                  backgroundColor: card.color,
+                }]}
+              {...createPanResponder(index).panHandlers}
+            >
+              <View style={styles.cardContent} >
+                <Text style={styles.cardText}>{card.name}</Text>
+              </View>
+            </Animated.View>
+          ))}
+        </View>
+      </ScrollView>
     </ImageBackground>
   )
 }
@@ -64,20 +65,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     position: 'relative',
-    alignItems: 'flex-end',
-    justifyContent: 'flex-end',
     width: '100%',
-    backgroundColor: 'charcoal',
+    paddingBottom: 50,
+    paddingTop: 10
   },
   card: {
-    position: 'absolute',
-    justifyContent: 'center',
-    padding: 20,
-    top: "15%",
-    right: 0,
-    width: '55%',
-    borderRadius: 8,
-    height: "65%",
+    width: '94%',
+    height: 60,
+    marginHorizontal: 20,
     shadowColor: '#F7AF27',
     shadowOffset: {
       width: 0,
@@ -89,15 +84,17 @@ const styles = StyleSheet.create({
   },
   cardContent: {
     width: '100%',
-    alignItems: 'center',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    paddingLeft: 20
   },
   cardText: {
     color: '#F7AF27',
     fontFamily: 'TiltNeon',
     fontSize: 28,
-    transform: [{ rotate: '90deg' }],
     userSelect: 'none',
   },
 });
 
-export default SpaceSelector
+export default SpaceSelectorList

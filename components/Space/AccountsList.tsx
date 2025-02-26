@@ -1,6 +1,8 @@
 import { View, StyleSheet } from 'react-native'
 import { AccountInterface } from '@/interfaces/Provider.interface';
 import Account from './Account';
+import { useConfig } from '@/hooks/useConfig';
+import AccountList from './AccountList';
 
 interface AccountListProps {
   accountList: AccountInterface[];
@@ -9,11 +11,15 @@ interface AccountListProps {
   setEditingAccount: (account: AccountInterface) => void;
 }
 
-const AccountList = ({ accountList, showPassword, deleteAccount, setEditingAccount }: AccountListProps) => {
+const AccountsList = ({ accountList, showPassword, deleteAccount, setEditingAccount }: AccountListProps) => {
+  const { layout } = useConfig();
+
   return (
     <View style={styles.container}>
       {accountList?.map((card, index) => (
-        <Account key={index} account={card} showPassword={showPassword} deleteAccount={deleteAccount} setEditingAccount={setEditingAccount} />
+        layout === 'default' ?
+          <Account key={index} account={card} showPassword={showPassword} deleteAccount={deleteAccount} setEditingAccount={setEditingAccount} /> :
+          <AccountList key={index} account={card} showPassword={showPassword} deleteAccount={deleteAccount} setEditingAccount={setEditingAccount} />
       ))}
     </View>
   );
@@ -29,4 +35,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AccountList
+export default AccountsList;

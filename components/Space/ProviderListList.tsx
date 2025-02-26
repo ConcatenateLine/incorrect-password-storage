@@ -1,28 +1,27 @@
 import { useMemo, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native'
 import ProviderInterface from '@/interfaces/Provider.interface';
-import AccountList from './AccountsList';
+import AccountsList from './AccountsList';
 
-interface ProviderListProps {
+interface ProviderListListProps {
   providerList: ProviderInterface[];
   showPassword: (password: string) => string;
   deleteAccount: (id: string, username: string) => void
   setEditingAccount: (account: any) => void
 }
 
-const ProviderList = ({ providerList, showPassword, deleteAccount, setEditingAccount }: ProviderListProps) => {
+const ProviderListList = ({ providerList, showPassword, deleteAccount, setEditingAccount }: ProviderListListProps) => {
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
 
   const cardStack = useMemo(() => {
-
     if (!providerList) return [];
-    return providerList.map(() => {
+    return providerList.map((provider) => {
       return {
         y: new Animated.Value(60),
+        height: 60 + (130 * provider.accounts.length),
       }
     });
   }, [providerList]);
-
 
   const handleCardPress = (index: number) => {
     if (selectedCard === index) {
@@ -45,7 +44,7 @@ const ProviderList = ({ providerList, showPassword, deleteAccount, setEditingAcc
     }
 
     Animated.timing(cardStack[index].y, {
-      toValue: 60 + (100 * (providerList[index].accounts.length)),
+      toValue: cardStack[index].height,
       duration: 200,
       useNativeDriver: false
     }).start();
@@ -62,8 +61,6 @@ const ProviderList = ({ providerList, showPassword, deleteAccount, setEditingAcc
             [styles.item,
             {
               overflow: 'hidden',
-              borderStartEndRadius: 0,
-              borderEndEndRadius: 0,
               backgroundColor: item.color,
               zIndex: 1,
               height: cardStack[index].y
@@ -74,8 +71,9 @@ const ProviderList = ({ providerList, showPassword, deleteAccount, setEditingAcc
             onPress={() => handleCardPress(index)}
           >
             <Text style={styles.itemText}>{item.name}</Text>
+            <Text style={styles.itemText}>{selectedCard === index ? '▲' : '▼'}</Text>
           </TouchableOpacity>
-          <AccountList accountList={item.accounts} showPassword={showPassword} deleteAccount={deleteAccount} setEditingAccount={setEditingAccount} />
+          <AccountsList accountList={item.accounts} showPassword={showPassword} deleteAccount={deleteAccount} setEditingAccount={setEditingAccount} />
         </Animated.View>
       ))}
     </View>
@@ -88,12 +86,12 @@ const styles = StyleSheet.create({
     position: 'relative',
     width: '100%',
     paddingBottom: 40,
+    paddingTop: 20,
   },
   item: {
-    margin: 20,
+    height: "auto",
+    marginHorizontal: 5,
     paddingTop: 60,
-    borderRadius: 8,
-    height: 100,
     shadowColor: '#F7AF27',
     shadowOffset: {
       width: 0,
@@ -104,6 +102,9 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   itemContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    zIndex: 1,
     borderRadius: 8,
     position: 'absolute',
     padding: 20,
@@ -116,4 +117,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProviderList
+export default ProviderListList

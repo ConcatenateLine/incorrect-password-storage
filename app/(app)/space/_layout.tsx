@@ -12,6 +12,10 @@ export default function SpaceLayout() {
     return <Redirect href="/sign-in" />;
   }
 
+  if (!selectedSpace) {
+    return <Redirect href="/" />;
+  }
+
   return <ProvidersProvider selectedSpace={selectedSpace}>
     <Stack screenOptions={{
       headerShown: false
