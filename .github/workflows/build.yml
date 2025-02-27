@@ -42,15 +42,7 @@ jobs:
       - name: Download APK
         run: |
           curl -Lo app-release.apk $BUILD_URL
-  
-  Release:
-    runs-on: ubuntu-latest
-    environment: build
-    permissions:
-      contents: write
-    needs: build
-
-    steps:
+          
       - name: Build release
         run: echo ${{ github.sha }} > Release.txt
       
