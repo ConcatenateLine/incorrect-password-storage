@@ -2,9 +2,9 @@ name: Build APK for Expo
 
 on:
   push:
-    branches:
-      - main
-
+    tags:
+      - 'v*.*.*'
+      
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -42,7 +42,7 @@ jobs:
       - name: Download APK
         run: |
           curl -Lo app-release.apk $BUILD_URL
-          
+
       - name: Build release
         run: echo ${{ github.sha }} > Release.txt
       
@@ -51,7 +51,6 @@ jobs:
       
       - name: Release
         uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
             Release.txt
