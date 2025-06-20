@@ -24,6 +24,11 @@ const ProviderListList = ({ providerList, showPassword, deleteAccount, setEditin
   }, [providerList]);
 
   const handleCardPress = (index: number) => {
+    if (!cardStack[index]){
+      setSelectedCard(null);
+      return;
+    }
+
     if (selectedCard === index) {
       Animated.timing(cardStack[index].y, {
         toValue: 60,
@@ -35,7 +40,7 @@ const ProviderListList = ({ providerList, showPassword, deleteAccount, setEditin
       return;
     }
 
-    if (selectedCard !== null) {
+    if (selectedCard !== null && cardStack[selectedCard]) {
       Animated.timing(cardStack[selectedCard].y, {
         toValue: 60,
         duration: 200,
