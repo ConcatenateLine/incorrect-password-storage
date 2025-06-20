@@ -1,45 +1,45 @@
 import { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 
-interface ExportDataProps {
-  exportToJson: () => Promise<boolean>;
-  exportAllWorkspacesToJson?: () => Promise<boolean>;
+interface ImportDataProps {
+  importFromJson: () => Promise<boolean>;
+  importAllWorkspacesFromJson?: () => Promise<boolean>;
   isLoading?: boolean;
-  exportAll?: boolean;
+  importAll?: boolean;
 }
 
-export default function ExportData({ exportToJson, exportAllWorkspacesToJson, isLoading = false, exportAll = false }: ExportDataProps) {
-  const [isExporting, setIsExporting] = useState(false);
+export default function ImportData({ importFromJson, importAllWorkspacesFromJson, isLoading = false, importAll = false }: ImportDataProps) {
+  const [isImporting, setIsImporting] = useState(false);
 
-  const handleExport = async () => {
+  const handleImport = async () => {
     Alert.alert(
-      exportAll ? 'Export All Workspaces' : 'Export Data',
-      exportAll
-        ? 'This will export all your workspaces and passwords to a JSON file. Make sure to keep this file secure!'
-        : 'This will export all your passwords to a JSON file. Make sure to keep this file secure!',
+      importAll ? 'Import All Workspaces' : 'Import Data',
+      importAll
+        ? 'This will import all workspaces and passwords from a JSON file. Existing data will be merged with imported data. Continue?'
+        : 'This will import passwords from a JSON file. Existing data will be merged with imported data. Continue?',
       [
         {
           text: 'Cancel',
           style: 'cancel',
         },
         {
-          text: 'Export',
-          style: 'destructive',
+          text: 'Import',
+          style: 'default',
           onPress: async () => {
-            setIsExporting(true);
+            setIsImporting(true);
             try {
-              const success = exportAll
-                ? await (exportAllWorkspacesToJson && exportAllWorkspacesToJson())
-                : await exportToJson();
+              const success = importAll
+                ? await (importAllWorkspacesFromJson && importAllWorkspacesFromJson())
+                : await importFromJson();
               if (success) {
-                Alert.alert('Success', 'Data exported successfully!');
+                Alert.alert('Success', 'Data imported successfully!');
               } else {
-                Alert.alert('Error', 'Failed to export data. Please try again.');
+                Alert.alert('Error', 'Failed to import data. Please check the file format and try again.');
               }
             } catch (error) {
-              Alert.alert('Error', 'An unexpected error occurred during export.');
+              Alert.alert('Error', 'An unexpected error occurred during import.');
             } finally {
-              setIsExporting(false);
+              setIsImporting(false);
             }
           },
         },
@@ -51,18 +51,18 @@ export default function ExportData({ exportToJson, exportAllWorkspacesToJson, is
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerText}>{exportAll ? 'Export All Workspaces' : 'Export Data'}</Text>
+        <Text style={styles.headerText}>{importAll ? 'Import All Workspaces' : 'Import Data'}</Text>
       </View>
       <View style={styles.body}>
         <TouchableOpacity 
-          style={[styles.button, (isExporting || isLoading) && styles.disabled]} 
-          onPress={handleExport}
-          disabled={isExporting || isLoading}
+          style={[styles.button, (isImporting || isLoading) && styles.disabled]} 
+          onPress={handleImport}
+          disabled={isImporting || isLoading}
         >
           <Text style={styles.buttonText}>
-            {isExporting
-              ? (exportAll ? 'Exporting All...' : 'Exporting...')
-              : (exportAll ? 'Export All Workspaces to JSON' : 'Export to JSON')}
+            {isImporting
+              ? (importAll ? 'Importing All...' : 'Importing...')
+              : (importAll ? 'Import All Workspaces from JSON' : 'Import from JSON')}
           </Text>
         </TouchableOpacity>
       </View>

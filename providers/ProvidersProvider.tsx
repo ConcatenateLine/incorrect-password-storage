@@ -4,7 +4,7 @@ import ProvidersContext from '@/contexts/ProvidersContext';
 import ProviderInterface, { AccountInterface } from '@/interfaces/Provider.interface';
 import { generateRedOrangeHexColor } from '@/utils/GenerateRandomColor';
 import { decrypt, encrypt } from '@/utils/Crypto';
-import { exportToJson } from '@/utils/Export';
+import { exportToJson, importFromJson, exportAllWorkspacesToJson, importAllWorkspacesFromJson } from '@/utils/Export';
 import Constants from 'expo-constants';
 
 export function ProvidersProvider({ children, selectedSpace }: PropsWithChildren & { selectedSpace: string | null }) {
@@ -152,6 +152,94 @@ export function ProvidersProvider({ children, selectedSpace }: PropsWithChildren
     }
   };
 
+  const handleImportFromJson = async (): Promise<boolean> => {
+    try {
+      const result = await importFromJson();
+      if (!result) {
+        setError('Import failed or was cancelled');
+        return false;
+      }
+
+      const { providers: importedProviders } = result;
+      
+      if (!importedProviders || importedProviders.length === 0) {
+        setError('No valid data found in the imported file');
+        return false;
+      }
+
+      // Merge imported providers with existing ones
+      const existingProviders = providers || [];
+      const mergedProviders: ProviderInterface[] = [];
+
+      // Process each imported provider
+      importedProviders.forEach(importedProvider => {
+        const existingProvider = existingProviders.find(p => p.name === importedProvider.name);
+        
+        if (existingProvider) {
+          // Merge accounts, avoiding duplicates by username
+          const existingUsernames = new Set(existingProvider.accounts.map(a => a.username));
+          const newAccounts: AccountInterface[] = importedProvider.accounts.filter(account => 
+            !existingUsernames.has(account.username)
+          ).map((account, index) => ({
+            ...account,
+            id: account.username + '@' + (existingProvider.accounts.length + index),
+            password: encrypt(account.password, secret) // Re-encrypt with current secret
+          }));
+
+          mergedProviders.push({
+            ...existingProvider,
+            accounts: [...existingProvider.accounts, ...newAccounts]
+          });
+        } else {
+          // Add new provider
+          mergedProviders.push({
+            ...importedProvider,
+            id: importedProvider.name,
+            image: '',
+            color: generateRedOrangeHexColor(),
+            accounts: importedProvider.accounts.map((account, index) => ({
+              ...account,
+              id: account.username + '@' + index,
+              password: encrypt(account.password, secret) // Encrypt with current secret
+            }))
+          });
+        }
+      });
+
+      // Add existing providers that weren't in the import
+      existingProviders.forEach(existingProvider => {
+        if (!mergedProviders.find(p => p.name === existingProvider.name)) {
+          mergedProviders.push(existingProvider);
+        }
+      });
+
+      setProviders(mergedProviders);
+      setError(null);
+      return true;
+    } catch (error) {
+      setError('Import failed: ' + (error instanceof Error ? error.message : 'Unknown error'));
+      return false;
+    }
+  };
+
+  const handleExportAllWorkspacesToJson = async (): Promise<boolean> => {
+    try {
+      return await exportAllWorkspacesToJson(showPassword);
+    } catch (error) {
+      setError('Export all workspaces failed');
+      return false;
+    }
+  };
+
+  const handleImportAllWorkspacesFromJson = async (): Promise<boolean> => {
+    try {
+      return await importAllWorkspacesFromJson((password: string) => encrypt(password, secret));
+    } catch (error) {
+      setError('Import all workspaces failed');
+      return false;
+    }
+  };
+
   useEffect(() => {
     if (!isLoadingProviders && !providers) {
       addAccount(
@@ -174,7 +262,10 @@ export function ProvidersProvider({ children, selectedSpace }: PropsWithChildren
         editingAccount,
         setEditingAccount,
         editAccount,
-        exportToJson: handleExportToJson
+        exportToJson: handleExportToJson,
+        importFromJson: handleImportFromJson,
+        exportAllWorkspacesToJson: handleExportAllWorkspacesToJson,
+        importAllWorkspacesFromJson: handleImportAllWorkspacesFromJson
       }}>
       {children}
     </ProvidersContext.Provider>
