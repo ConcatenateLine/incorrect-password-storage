@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 
 interface ExportDataProps {
-  exportToTxt: () => Promise<boolean>;
+  exportToJson: () => Promise<boolean>;
   isLoading?: boolean;
 }
 
-export default function ExportData({ exportToTxt, isLoading = false }: ExportDataProps) {
+export default function ExportData({ exportToJson, isLoading = false }: ExportDataProps) {
   const [isExporting, setIsExporting] = useState(false);
 
   const handleExport = async () => {
@@ -24,7 +24,7 @@ export default function ExportData({ exportToTxt, isLoading = false }: ExportDat
           onPress: async () => {
             setIsExporting(true);
             try {
-              const success = await exportToTxt();
+              const success = await exportToJson();
               if (success) {
                 Alert.alert('Success', 'Data exported successfully!');
               } else {
@@ -54,7 +54,7 @@ export default function ExportData({ exportToTxt, isLoading = false }: ExportDat
           disabled={isExporting || isLoading}
         >
           <Text style={styles.buttonText}>
-            {isExporting ? 'Exporting...' : 'Export to TXT'}
+            {isExporting ? 'Exporting...' : 'Export to JSON'}
           </Text>
         </TouchableOpacity>
       </View>

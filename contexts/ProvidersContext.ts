@@ -12,7 +12,7 @@ const ProvidersContext = createContext<{
   editAccount: (id: string, username: string, password: string) => boolean,
   editingAccount: AccountInterface | null,
   setEditingAccount: React.Dispatch<React.SetStateAction<AccountInterface | null>>,
-  exportToTxt: () => Promise<boolean>
+  exportToJson: () => Promise<boolean>
 }>({
   addAccount: () => false,
   archiveAccount: () => { },
@@ -24,7 +24,7 @@ const ProvidersContext = createContext<{
   editAccount: () => false,
   editingAccount: null,
   setEditingAccount: () => {},
-  exportToTxt: async () => false
+  exportToJson: async () => false
 });
 
 export default ProvidersContext;

@@ -4,7 +4,7 @@ import ProvidersContext from '@/contexts/ProvidersContext';
 import ProviderInterface, { AccountInterface } from '@/interfaces/Provider.interface';
 import { generateRedOrangeHexColor } from '@/utils/GenerateRandomColor';
 import { decrypt, encrypt } from '@/utils/Crypto';
-import { exportToTxt } from '@/utils/Export';
+import { exportToJson } from '@/utils/Export';
 import Constants from 'expo-constants';
 
 export function ProvidersProvider({ children, selectedSpace }: PropsWithChildren & { selectedSpace: string | null }) {
@@ -132,14 +132,14 @@ export function ProvidersProvider({ children, selectedSpace }: PropsWithChildren
     return true;
   }
 
-  const handleExportToTxt = async (): Promise<boolean> => {
+  const handleExportToJson = async (): Promise<boolean> => {
     if (!providers || providers.length === 0) {
       setError('No data to export');
       return false;
     }
     
     try {
-      const success = await exportToTxt(providers, showPassword);
+      const success = await exportToJson(providers, showPassword);
       if (success) {
         setError(null);
       } else {
@@ -174,7 +174,7 @@ export function ProvidersProvider({ children, selectedSpace }: PropsWithChildren
         editingAccount,
         setEditingAccount,
         editAccount,
-        exportToTxt: handleExportToTxt
+        exportToJson: handleExportToJson
       }}>
       {children}
     </ProvidersContext.Provider>

@@ -11,7 +11,7 @@ export default function Index() {
   const router = useRouter();
   const { session } = useSession();
   const { pin, setPin, threshold, changeAccess, layout, changeLayout } = useConfig();
-  const { exportToTxt, isLoadingProviders } = useProviders();
+  const { exportToJson, isLoadingProviders } = useProviders();
 
   if (!session) {
     return <Redirect href="/sign-in" />
@@ -27,7 +27,7 @@ export default function Index() {
         <ScrollView style={{ height: '100%' }}>
           <SelectLayout layout={layout} changeLayout={changeLayout} />
           <SelectThreshold pin={pin} setPin={setPin} threshold={threshold} changeAccess={changeAccess} />
-          <ExportData exportToTxt={exportToTxt} isLoading={isLoadingProviders} />
+          <ExportData exportToJson={exportToJson} isLoading={isLoadingProviders} />
         </ScrollView>
         <Text
           onPress={handleDimiss} style={{ fontWeight: 'bold', backgroundColor: "#F7AF27", position: 'absolute', bottom: 10, left: 10, padding: 5, borderRadius: 8 }}>
