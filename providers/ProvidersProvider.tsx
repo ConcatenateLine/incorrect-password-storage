@@ -216,20 +216,28 @@ export function ProvidersProvider({
         );
 
         if (existingProvider) {
-          // Merge accounts, avoiding duplicates by username
+          // Merge accounts, renaming imported accounts if username is duplicated
           const existingUsernames = new Set(
             existingProvider.accounts.map((a) => a.username)
           );
-          const newAccounts: AccountInterface[] = importedProvider.accounts
-            .filter((account) => !existingUsernames.has(account.username))
-            .map((account, index) => ({
+          const allUsernames = new Set(existingUsernames);
+          const newAccounts: AccountInterface[] = importedProvider.accounts.map((account, index) => {
+            let baseUsername = account.username;
+            let newUsername = baseUsername;
+            let suffix = 1;
+            // If username exists, append (imported) or (imported N)
+            while (allUsernames.has(newUsername)) {
+              newUsername = `${baseUsername} (imported${suffix > 1 ? ' ' + suffix : ''})`;
+              suffix++;
+            }
+            allUsernames.add(newUsername);
+            return {
               ...account,
-              id:
-                account.username +
-                "@" +
-                (existingProvider.accounts.length + index),
+              username: newUsername,
+              id: newUsername + "@" + (existingProvider.accounts.length + index),
               password: encrypt(account.password, secret), // Re-encrypt with current secret
-            }));
+            };
+          });
 
           mergedProviders.push({
             ...existingProvider,
