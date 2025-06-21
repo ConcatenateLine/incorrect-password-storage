@@ -51,7 +51,8 @@ const SpaceSelectorList = ({ spacesList, setSelectedSpace }: SpaceSelectorListPr
               {...createPanResponder(index).panHandlers}
             >
               <View style={styles.cardContent} >
-                <Text style={styles.cardText}>{card.name}</Text>
+                <Text style={styles.cardText}>{card.name}</Text> 
+                <Text style={styles.cardSimbol}>◀|</Text> 
               </View>
             </Animated.View>
           ))}
@@ -85,9 +86,8 @@ const styles = StyleSheet.create({
   cardContent: {
     width: '100%',
     height: '100%',
-    justifyContent: 'center',
     alignItems: 'flex-start',
-    paddingLeft: 20
+    paddingLeft: 20,
   },
   cardText: {
     color: '#F7AF27',
@@ -95,6 +95,14 @@ const styles = StyleSheet.create({
     fontSize: 28,
     userSelect: 'none',
   },
+  cardSimbol:{
+    color: '#F7AF27',
+    fontFamily: 'TiltNeon',
+    fontSize: 28,
+    userSelect: 'none',
+    position:"absolute",
+    right:0
+  }
 });
 
 export default SpaceSelectorList
